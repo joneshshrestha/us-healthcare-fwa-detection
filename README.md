@@ -273,7 +273,6 @@ us-healthcare-fwa-detection/
 │   ├── Train_Inpatientdata-1542865627584.csv
 │   ├── Train_Outpatientdata-1542865627584.csv
 │   └── Train-1542865627584.csv
-├── Final Report.pdf             # Comprehensive project report
 └── README.md                    # This file
 ```
 
