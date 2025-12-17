@@ -11,9 +11,9 @@ Provider-level fraud detection on Medicare-inspired claims data using a full KDD
 
 This project uses four linked tables (joined via beneficiary IDs and provider IDs):
 
-1. **Beneficiary data**: demographics, chronic conditions, annual reimbursements, and coverage info
-2. **Inpatient claims**: dates, reimbursements/deductibles, diagnosis and procedure codes, physician IDs
-3. **Outpatient claims**: similar structure (procedure codes are sparse)
+1. **Beneficiary data**: demographics, chronic conditions, annual reimbursements, and coverage info  
+2. **Inpatient claims**: dates, reimbursements/deductibles, diagnosis and procedure codes, physician IDs  
+3. **Outpatient claims**: similar structure (procedure codes are sparse)  
 4. **Provider labels**: provider ID and binary fraud label (Yes/No)
 
 **Scale and class balance (provider-level):**
@@ -37,14 +37,14 @@ This project uses four linked tables (joined via beneficiary IDs and provider ID
 
 Because labels are at the **provider** level, all claim-level and beneficiary-level information is aggregated into **47 provider-level features**, grouped as:
 
-- **Claim volume features (6)**: total claims, inpatient/outpatient counts, inpatient-outpatient ratio, unique beneficiaries, claims per beneficiary
-- **Financial features (7)**: total/avg reimbursements and deductibles, standard deviations, ratios, max/min
-- **Temporal features (2)**: average claim duration, average admission duration
-- **Medical code features (6)**: unique diagnosis/procedure codes, avg codes per claim, top-code ratio
-- **Physician features (5)**: unique physician counts by role + diversity ratio
+- **Claim volume features (6)**: total claims, inpatient/outpatient counts, inpatient-outpatient ratio, unique beneficiaries, claims per beneficiary  
+- **Financial features (7)**: total/avg reimbursements and deductibles, standard deviations, ratios, max/min  
+- **Temporal features (2)**: average claim duration, average admission duration  
+- **Medical code features (6)**: unique diagnosis/procedure codes, avg codes per claim, top-code ratio  
+- **Physician features (5)**: unique physician counts by role + diversity ratio  
 - **Demographic features (21)**: aggregated beneficiary demographics, chronic-condition burden, and percentages
 
-**Missing data handling** was treated as structured (for example, diagnosis and procedure code "missingness" often means "no additional codes"), and DOD is used only to compute the percent of deceased beneficiaries.
+**Missing data handling** was treated as structured (for example, diagnosis and procedure code “missingness” often means “no additional codes”), and DOD is used only to compute the percent of deceased beneficiaries.
 
 **Scaling:** Features are standardized with `StandardScaler`. Log scaling was tested for skewed financial features, but not used in final modeling.
 
@@ -111,13 +111,13 @@ Confusion matrix at threshold 0.46 (fraud-positive class):
 
 ### Model comparison (fraud class, held-out test set)
 
-| Model                       | Setup                  | Precision (Fraud) | Recall (Fraud) | F1 (Fraud) | ROC-AUC | PR-AUC |
-| --------------------------- | ---------------------- | ----------------: | -------------: | ---------: | ------: | -----: |
-| Logistic Regression         | class_weight=balanced  |            0.3966 |         0.9307 |     0.5562 |  0.9587 | 0.7520 |
-| Logistic Regression + SMOTE | SMOTE on training data |            0.4141 |         0.9307 |     0.5732 |  0.9577 |   -     |
-| Random Forest               | SMOTE, threshold=0.50  |            0.5571 |         0.7723 |     0.6473 |  0.9546 | 0.6953 |
-| XGBoost                     | SMOTE, threshold=0.50  |            0.5625 |         0.7129 |     0.6288 |  0.9579 | 0.7209 |
-| Random Forest               | SMOTE, threshold=0.46  |            0.5390 |         0.8218 |     0.6510 |  0.9546 | 0.6953 |
+| Model | Setup | Precision (Fraud) | Recall (Fraud) | F1 (Fraud) | ROC-AUC | PR-AUC |
+|---|---|---:|---:|---:|---:|---:|
+| Logistic Regression | class_weight=balanced | 0.3966 | 0.9307 | 0.5562 | 0.9587 | 0.7520 |
+| Logistic Regression + SMOTE | SMOTE on training data | 0.4141 | 0.9307 | 0.5732 | 0.9577 |  |
+| Random Forest | SMOTE, threshold=0.50 | 0.5571 | 0.7723 | 0.6473 | 0.9546 | 0.6953 |
+| XGBoost | SMOTE, threshold=0.50 | 0.5625 | 0.7129 | 0.6288 | 0.9579 | 0.7209 |
+| Random Forest | SMOTE, threshold=0.46 | 0.5390 | 0.8218 | 0.6510 | 0.9546 | 0.6953 |
 
 ### Interpretation and key signals
 
@@ -129,33 +129,35 @@ Confusion matrix at threshold 0.46 (fraud-positive class):
 
 ### Exploratory data analysis
 
-![Figure 5.1.1: Distribution of Total Reimbursement by Fraud Status](images/Distribution%20of%20Total%20Reimbursement%20by%20Fraud%20Status.jpg)
+![Figure 5.1.1: Distribution of Total Reimbursement by Fraud Status](assets/fig_5_1_1_total_reimbursement.png)
 
-![Figure 5.1.2: Distribution of Total Claims by Fraud Status](images/Distribution%20of%20Total%20Claims%20by%20Fraud%20Status.jpg)
+![Figure 5.1.2: Distribution of Total Claims by Fraud Status](assets/fig_5_1_2_total_claims.png)
 
 ### Unsupervised learning
 
-![Figure 5.2.1: PCA Projection of Providers Colored by KMeans Cluster (k=3)](images/PCA%20Projection%20of%20Providers%20Colored%20by%20K-Means%20Cluster%20%28k%3D3%29.jpg)
+![Figure 5.2.1: PCA Projection of Providers Colored by KMeans Cluster (k=3)](assets/fig_5_2_1_pca_kmeans_k3.png)
 
-![Figure 5.2.2: PCA Projection of Providers by Fraud Label](images/PCA%20Projection%20of%20Providers%20by%20Fraud%20Label.jpg)
+![Figure 5.2.2: PCA Projection of Providers by Fraud Label](assets/fig_5_2_2_pca_fraud_label.png)
 
 ### Threshold tuning
 
-![Figure 5.3.1a: F1-Score vs Classification Threshold (Validation Set)](images/F1-Score%20vs%20Classification%20Threshold%20%28Validation%20Set%29.jpg)
+> Note: the report labels both plots as “Figure 5.3.1”. Here they are split into (a) and (b) for clarity.
 
-![Figure 5.3.1b: Precision-Recall Trade-off vs Classification Threshold (Validation Set)](images/Precision%E2%80%93Recall%20Trade-o%EF%AC%80%20vs%20Classification%20Threshold%20%28Validation%20Set%29.jpg)
+![Figure 5.3.1a: F1-Score vs Classification Threshold (Validation Set)](assets/fig_5_3_1a_f1_vs_threshold.png)
+
+![Figure 5.3.1b: Precision-Recall Trade-off vs Classification Threshold (Validation Set)](assets/fig_5_3_1b_pr_tradeoff_vs_threshold.png)
 
 ### Supplementary figures
 
-![Figure D1: Top 20 Features by Random Forest Importance](images/Random%20Forest%20Features-32.png)
+![Figure D1: Top 20 Features by Random Forest Importance](assets/fig_d1_rf_feature_importance_top20.png)
 
-![Figure D2: Isolation Forest anomaly detection and anomaly score distribution](images/Anomaly.png)
+![Figure D2: Isolation Forest anomaly detection and anomaly score distribution](assets/fig_d2_isolation_forest_pca_and_scores.png)
 
-![Figure D3: Correlation matrix of key provider features](images/Correlation%20Matrix.png)
+![Figure D3: Correlation matrix of key provider features](assets/fig_d3_correlation_matrix.png)
 
-![Figure D4: Histograms of key provider features (log-transformed)](images/Histogram%20Log%20Transformed.png)
+![Figure D4: Histograms of key provider features (log-transformed)](assets/fig_d4_histograms_log_transformed.png)
 
-![Figure D5: Model performance comparisons](images/Model%20Performace%20Comparisons.png)
+![Figure D5: Model performance comparisons](assets/fig_d5_model_performance_comparisons.png)
 
 ## Tools and libraries
 
@@ -172,7 +174,7 @@ Confusion matrix at threshold 0.46 (fraud-positive class):
 2. Install dependencies (example):
    ```bash
    pip install pandas numpy matplotlib seaborn scikit-learn imbalanced-learn xgboost
-   ```
+````
 
 3. Run the notebook:
 
